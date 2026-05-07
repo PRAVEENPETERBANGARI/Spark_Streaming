@@ -1,0 +1,34 @@
+resources:
+  jobs:
+    Spark_Streaming_AutoLoader:
+      name: Spark_Streaming_AutoLoader
+      trigger:
+        pause_status: UNPAUSED
+        file_arrival:
+          url: /Volumes/${var.catalog}/bronze/volume_raw/landing/invoices_data/
+      tasks:
+        - task_key: ingestion_bronze
+          notebook_task:
+            notebook_path: "../../src/streaming_project/invoices_load/bronze_streaming_autoloader.py"
+            base_parameters:
+              env: ${var.env}
+            source: WORKSPACE
+        - task_key: bronze_to_silver
+          depends_on:
+            - task_key: ingestion_bronze
+          notebook_task:
+            notebook_path: "../../src/streaming_project/invoices_load/bronze_to_silver.py"
+            base_parameters:
+              env: ${var.env}
+            source: WORKSPACE
+        - task_key: gold_layer
+          depends_on:
+            - task_key: bronze_to_silver
+          notebook_task:
+            notebook_path: "../../src/streaming_project/invoices_load/gold_processing.py"
+            base_parameters:
+              env: ${var.env}
+            source: WORKSPACE
+      queue:
+        enabled: true
+      performance_target: PERFORMANCE_OPTIMIZED

@@ -1,0 +1,15 @@
+resources:
+  jobs:
+    Setup_Job:
+      name: Setup_Job
+      tasks:
+        - task_key: pipeline_A
+          run_job_task:
+            job_id: 465859571235913
+        - task_key: pipeline_B
+          depends_on:
+            - task_key: pipeline_A
+          run_job_task:
+            job_id: 397479643825019
+      queue:
+        enabled: true

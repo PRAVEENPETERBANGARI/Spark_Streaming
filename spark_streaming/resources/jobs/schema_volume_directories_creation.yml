@@ -1,0 +1,47 @@
+resources:
+  jobs:
+    schema_volume_directories_creation:
+      name: schema_volume_directories_creation
+      tasks:
+        - task_key: bronze_layer
+          notebook_task:
+            notebook_path: ../../src/streaming_project/table_volume_schema_creation/schema_and_volume_creation.ipynb
+            base_parameters:
+              env: ${var.env}
+              schema: bronze
+              volume: volume_raw
+            source: WORKSPACE
+          environment_key: bronze_layer_environment
+        - task_key: gold_layer
+          notebook_task:
+            notebook_path: ../../src/streaming_project/table_volume_schema_creation/schema_and_volume_creation.ipynb
+            base_parameters:
+              env: ${var.env}
+              schema: gold
+              volume: volume_main
+            source: WORKSPACE
+        - task_key: silver_layer
+          notebook_task:
+            notebook_path: ../../src/streaming_project/table_volume_schema_creation/schema_and_volume_creation.ipynb
+            base_parameters:
+              env: ${var.env}
+              schema: silver
+              volume: volume_stg
+            source: WORKSPACE
+        - task_key: create_directories
+          depends_on:
+            - task_key: bronze_layer
+            - task_key: gold_layer
+            - task_key: silver_layer
+          notebook_task:
+            notebook_path: ../../src/streaming_project/table_volume_schema_creation/directories_creation.ipynb
+            base_parameters:
+              env: ${var.env}
+            source: WORKSPACE
+      queue:
+        enabled: true
+      environments:
+        - environment_key: bronze_layer_environment
+          spec:
+            environment_version: "5"
+      performance_target: PERFORMANCE_OPTIMIZED
