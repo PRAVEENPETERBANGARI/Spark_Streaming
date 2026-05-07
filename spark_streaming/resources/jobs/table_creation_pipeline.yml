@@ -1,0 +1,45 @@
+resources:
+  jobs:
+    table_creation_pipeline:
+      name: table_creation_pipeline
+      tasks:
+        - task_key: bronze_table
+          notebook_task:
+            notebook_path: ../../src/streaming_project/table_volume_schema_creation/table_creation.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: bronze
+              table: bronze_invoice_details
+            source: WORKSPACE
+        - task_key: gold_table_1
+          notebook_task:
+            notebook_path: ../../src/streaming_project/table_volume_schema_creation/table_creation.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: gold
+              table: store_analysis
+            source: WORKSPACE
+        - task_key: gold_table_2
+          notebook_task:
+            notebook_path: ../../src/streaming_project/table_volume_schema_creation/table_creation.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: gold
+              table: store_analysis_upsert
+            source: WORKSPACE
+        - task_key: silver_table
+          notebook_task:
+            notebook_path: ../../src/streaming_project/table_volume_schema_creation/table_creation.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: silver
+              table: silver_invoice_details
+            source: WORKSPACE
+          environment_key: Default
+      queue:
+        enabled: true
+      environments:
+        - environment_key: Default
+          spec:
+            environment_version: "5"
+      performance_target: PERFORMANCE_OPTIMIZED

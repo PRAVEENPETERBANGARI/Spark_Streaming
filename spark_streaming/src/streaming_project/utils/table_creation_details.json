@@ -1,0 +1,14 @@
+[
+  {
+    "schema": "bronze",
+    "path": "../ddl/bronze"
+  },
+  {
+    "schema": "silver",
+    "path": "../ddl/silver"
+  },
+  {
+    "schema": "gold",
+    "path": "../ddl/gold"
+  }
+]

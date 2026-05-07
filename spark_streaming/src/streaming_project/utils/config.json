@@ -1,0 +1,25 @@
+{
+  "DEV" :  {
+    "Comments": "Catalog and Schema Details",
+    "catalog": "lakehouse_dev",
+    "bronze_schema": "bronze",
+    "silver_schema": "silver",
+    "gold_schema": "gold",
+
+    "bronze_volume": "volume_raw",
+    "silver_volume": "volume_stg",
+    "gold_volume": "volume_main"
+
+  },
+  "PROD" : {
+    "Comments": "Catalog and Schema Details",
+    "catalog": "lakehouse_prod",
+    "bronze_schema": "bronze",
+    "silver_schema": "silver",
+    "gold_schema": "gold",
+
+    "bronze_volume": "volume_raw",
+    "silver_volume": "volume_stg",
+    "gold_volume": "volume_main"    
+  }
+}
