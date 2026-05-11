@@ -6,12 +6,15 @@ bundle:
 
 include:
   - resources/jobs/*.yml
+exclude:
+  - resources/jobs_1/*.yml
 sync:
   include:
-    - src/streaming_project/ddl/**
-    - src/streaming_project/invoices_load/**
-    - src/streaming_project/table_volume_schema_creation/**
-    - src/streaming_project/utils/**
+    - src/streaming_project/**
+    # - src/streaming_project/ddl/**
+    # - src/streaming_project/invoices_load/**
+    # - src/streaming_project/table_volume_schema_creation/**
+    # - src/streaming_project/utils/**
 
 # Variable declarations. These variables are assigned in the dev/prod targets below.
 variables:
@@ -19,6 +22,8 @@ variables:
     description: The environment to use
   catalog:
     description: The catalog to use
+  trigger_check:
+    description: The status of trigger mode
 
 targets:
   dev:
@@ -30,20 +35,26 @@ targets:
     default: true
     workspace:
       host: https://dbc-cee3895b-7255.cloud.databricks.com/
-      root_path: /Workspace/.bundle/${bundle.name}/${workspace.current_user.userName}/${bundle.target}  
+      # root_path: /Workspace/.bundle/${bundle.name}/dev/${workspace.current_user.userName}/${bundle.target}  
+      root_path: /Workspace/Shared/${bundle.name}/${workspace.current_user.userName}/${bundle.target}
     variables:
       env: DEV
       catalog: lakehouse_dev
+      trigger_check: PAUSED
+    permissions:
+      - user_name: praveenpeterbangari@gmail.com
+        level: CAN_MANAGE      
 
   prod:
     mode: production
     workspace:
       host: https://dbc-cee3895b-7255.cloud.databricks.com/
       # We explicitly deploy to /Workspace/Users/praveenpeterbangari@gmail.com to make sure we only have a single copy.
-      root_path: /Workspace/.bundle/${bundle.name}/prod/${bundle.target}
+      root_path: /Workspace/Shared/${bundle.name}/prod/${bundle.target}
     variables:
       env: PROD
       catalog: lakehouse_prod
+      trigger_check: PAUSED
     permissions:
       - user_name: praveenpeterbangari@gmail.com
         level: CAN_MANAGE
